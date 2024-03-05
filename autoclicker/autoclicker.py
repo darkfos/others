@@ -3,53 +3,58 @@ from pynput.mouse import Button, Controller
 
 import time
 
-"""
-	Решил я значит поиграть в майнкрафт, ну а там гринд, как всегда, нужно куча копать, ломать.
-	Ну и подумал я напишу как я скрипт, который упростит мне жизнь.
-	Пожалуйста не баньте.
-"""
 
+class AutoClicker:
 
-def on_press(key) -> None:
 	"""
-	Проверяем нажатую клавишу
+		Решил я значит поиграть в майнкрафт, ну а там гринд, как всегда, нужно куча копать, ломать.
+		Ну и подумал я напишу как я скрипт, который упростит мне жизнь.
+		Пожалуйста не баньте.
 	"""
 
-	if key == keyboard.Key.esc:
-		global flag
-		flag = False
-	else:
-		print(f"Нажата клавиша: {key}")
+	def __init__(self):
+		self.flag = True
 
-def run_script():
-	"""
-	Запускаем скрипт, надеемся не забанят
-	"""
+	def on_press(self, key) -> None:
+		"""
+		Проверяем нажатую клавишу
+		"""
 
-	#Run script
-	global flag
-	flag = True
+		if key == keyboard.Key.esc:
+			self.flag = False
+		else:
+			print(f"Нажата клавиша: {key}")
 
-	try:
-		#Слушаем клавиатуруb
-		keyboard_listener = keyboard.Listener(on_press=on_press)
-		keyboard_listener.start()
+	def run_script(self, ):
+		"""
+		Запускаем скрипт, надеемся не забанят
+		"""
 
-		#Контроллеры мышки и клавиатуры
-		kb_controller = Controller()
-		mouse_controller = Controller()
+		try:
+			#Слушаем клавиатуруb
+			keyboard_listener = keyboard.Listener(on_press=self.on_press)
+			keyboard_listener.start()
 
-		while flag:
+			#Контроллеры мышки и клавиатуры
+			kb_controller = Controller()
+			mouse_controller = Controller()
 
-			#Нажатие левой кнопки мыши
-			mouse_controller.press(Button.left)
+			while self.flag:
 
-			time.sleep(2)
+				#Нажатие левой кнопки мыши
+				mouse_controller.press(Button.left)
 
-			#Отпускаем нажатие левой кнопки мыши
-			mouse_controller.release(Button.left)
+				time.sleep(2)
 
-	except Exception:
-		print("Программа окончила свою работу")
+				#Отпускаем нажатие левой кнопки мыши
+				mouse_controller.release(Button.left)
+			else:
+				print("Программа окончила свою работу")
 
-run_script()
+		except Exception:
+			print("Программа окончила свою работу")
+
+
+#Экземпляр авто кликера
+auto_click = AutoClicker()
+auto_click.run_script()
