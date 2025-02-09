@@ -18,7 +18,7 @@ async def get_data_from_yandex(fx_driver: webdriver.Firefox):
         fx_driver.execute_script(
           script="window.scrollBy(0, 2000);"
         )
-        time.sleep(2)
+        time.sleep(2.5)
         cnt += 1
 
     await product_partition(engine=fx_driver)
@@ -65,6 +65,7 @@ async def product_data(url: str):
             attr_data[old_data] = data.text
         cnt += 1
 
+    print(attr_data)
     ALL_PRODUCTS.append(
         {
             "title_product": title_product,
@@ -92,15 +93,21 @@ async def load_data_to_csv() -> None:
             file,
             fieldnames=keyses.keys(),
             delimiter=','
-        )    # Сохранение результатов в csv файл
+        )
+
+        # Сохранение результатов в csv файл
         csv_writer.writeheader()
 
         for product in ALL_PRODUCTS:
-            new_product = keyses.copy()
-            # Установк данных
-            for key in new_product.keys():
+            new_product = {}
+            # Установка данных
+            for key in keyses.keys():
                 if key in product.keys():
                     new_product[key] = product.get(key)
+                elif key in product.get("other_data").keys():
+                    new_product[key] = product.get("other_data").get(key)
+                else:
+                    new_product[key] = ""
             csv_writer.writerow(new_product)
 
 
@@ -118,6 +125,7 @@ async def main():
         await load_data_to_csv()
         firefox_driver.close()
     except Exception as ex:
+        await load_data_to_csv()
         print(ex)
 
 
